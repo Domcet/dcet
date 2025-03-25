@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Запросы пользователей</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #4CAF50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #f4f4f4;
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            color: #4CAF50;
+            text-decoration: none;
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #4CAF50;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        .pagination a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .pagination .current {
+            margin: 0 5px;
+            padding: 5px 10px;
+            color: white;
+            background-color: #4CAF50;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Запросы пользователей</h1>
+    <div class="container">
+        <ul>
+            {% for request in page_obj.items %}
+                <li>{{ request.timestamp }} — {{ request.address }}</li>
+            {% endfor %}
+        </ul>
+
+        <div class="pagination">
+            {% if page_obj.page > 1 %}
+                <a href="?page=1&size={{ params.size }}">1</a>
+                <a href="?page={{ page_obj.page - 1 }}&size={{ params.size }}"> <<< </a>
+            {% endif %}
+        
+            <span class="current">
+                {{ page_obj.page }} из {{ page_obj.pages }}
+            </span>
+        
+            {% if page_obj.page < page_obj.pages %}
+                <a href="?page={{ page_obj.page + 1 }}&size={{ params.size }}"> >>> </a>
+                <a href="?page={{ page_obj.pages }}&size={{ params.size }}">{{ page_obj.pages }}</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

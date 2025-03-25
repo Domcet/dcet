@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Файлы начислений</title>
+</head>
+<body>
+    <h1>Файлы начислений</h1>
+    <ul>
+        {% for file in excel_files %}
+            <li><a href="/download/{{ file }}">{{ file }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="/dashboard">Назад</a>
+</body>
+</html>

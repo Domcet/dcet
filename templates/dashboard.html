@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Начисления</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            width: 400px;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #status {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        a {
+            display: block;
+            margin-top: 15px;
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        function startTask(event) {
+            event.preventDefault(); // Предотвращаем перезагрузку страницы
+            
+            let periodTitle = document.getElementById("period-title").value;
+            let statusElement = document.getElementById("status");
+
+            // Подтверждение перед запуском начисления
+            let confirmation = confirm(`Вы уверены, что хотите запустить начисление с названием:\n"${periodTitle}"?`);
+            if (!confirmation) {
+                statusElement.innerText = "Начисление отменено.";
+                return;
+            }
+
+            fetch("/start_task", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ deal_name: periodTitle })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.task_id) {
+                    statusElement.innerText = "Начисление запущено, ID: " + data.task_id;
+                } else {
+                    statusElement.innerText = "Ошибка: не удалось запустить начисление.";
+                }
+            })
+            .catch(error => {
+                statusElement.innerText = "Ошибка при запуске: " + error.message;
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Начисления</h1>
+        <label for="period-title">Период начисления:</label>
+        <input type="text" id="period-title" value="Начисление за Февраль 2025">
+        <button onclick="startTask(event)">Запустить начисление</button>
+        <p id="status">Ожидание...</p>
+        <a href="/logs">Просмотреть логи</a>
+        <a href="/files">Файлы начислений</a>
+    </div>
+</body>
+</html>

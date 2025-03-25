@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Логи начислений</title>
+</head>
+<body>
+    <h1>Логи начислений</h1>
+    <ul>
+        {% for log in log_files %}
+            <li><a href="/view_log/{{ log }}">{{ log }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="/dashboard">Назад</a>
+</body>
+</html>
