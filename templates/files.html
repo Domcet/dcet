@@ -2,15 +2,102 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Файлы начислений</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #fef9e7, #f9e79f);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            border-top: 5px solid #f1c40f;
+        }
+        h1 {
+            font-size: 28px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        .file-name {
+            color: #f39c12;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+        .file-name:hover {
+            color: #d68910;
+        }
+        .download-icon {
+            background: #f1c40f;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .download-icon:hover {
+            background: #d68910;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background-color: #f39c12;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .back-link:hover {
+            background-color: #d68910;
+        }
+    </style>
 </head>
 <body>
-    <h1>Файлы начислений</h1>
-    <ul>
-        {% for file in excel_files %}
-            <li><a href="/download/{{ file }}">{{ file }}</a></li>
-        {% endfor %}
-    </ul>
-    <a href="/dashboard">Назад</a>
+    <div class="container">
+        <h1>Файлы начислений</h1>
+        <ul>
+            {% for file in excel_files %}
+                <li>
+                    <span class="file-name">{{ file }}</span>
+                    <a href="/download/{{ file }}" class="download-icon">⬇ Скачать</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="/dashboard" class="back-link">Назад</a>
+    </div>
 </body>
 </html>

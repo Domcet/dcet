@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, Body, APIRouter
+from fastapi import FastAPI, Request, Form, Body, APIRouter, Query
 from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
@@ -49,10 +49,25 @@ async def start_task(deal_name: str = Body(..., embed=True)):
     return {"task_id": task.id}
 
 @router.get("/logs", response_class=HTMLResponse)
-async def view_logs(request: Request):
+async def view_logs(request: Request, log: str = Query(None)):
     """Просмотр логов начислений"""
     log_files = [f for f in os.listdir(LOGS_DIR) if f.endswith(".log")]
-    return templates.TemplateResponse("logs.html", {"request": request, "log_files": log_files})
+    
+    log_name = None
+    log_content = None
+    
+    if log and log in log_files:
+        log_path = os.path.join(LOGS_DIR, log)
+        with open(log_path, "r", encoding="utf-8") as file:
+            log_name = log
+            log_content = "\n".join(reversed(file.readlines()))
+
+    return templates.TemplateResponse("logs.html", {
+        "request": request, 
+        "log_files": log_files,
+        "log_name": log_name,
+        "log_content": log_content
+    })
 
 @router.get("/view_log/{log_name}", response_class=HTMLResponse)
 async def view_log(log_name: str, request: Request):

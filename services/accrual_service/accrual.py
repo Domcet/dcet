@@ -69,12 +69,21 @@ class Accrual:
     
     async def make_report(self, out, processed_apartments, deal_name):
         """
-        Создает отчет в формате Excel с информацией о начислениях.
+        Создает или обновляет отчет в формате Excel с информацией о начислениях.
+        Отчет формируется и дополняется сразу после обработки каждой квартиры.
         
         :param out: список квартир, которые не получили начисление
         :param processed_apartments: список квартир, которые успешно прошли начисление
         """
-        data = []
+        filename = f"{deal_name}.xlsx"
+        
+        # Проверяем, есть ли уже существующий файл отчета
+        try:
+            existing_df = pd.read_excel(filename)
+            data = existing_df.to_dict(orient='records')
+        except FileNotFoundError:
+            data = []
+
         processed_ids = {apt["id"] for apt in processed_apartments} 
 
         for apt in processed_apartments:
@@ -97,12 +106,9 @@ class Accrual:
                 })
 
         df = pd.DataFrame(data)
-
-        filename = f"{deal_name}.xlsx"
-
         df.to_excel(filename, index=False)
-
-        print(f"Отчет сохранен в файл: {filename}")
+        
+        print(f"Отчет обновлен: {filename}")
         return filename
 
     @catch_exception(logger_name_static)
@@ -121,8 +127,8 @@ class Accrual:
                 apartment["new_balance"] = new_balance  
                 processed_apartments.append(apartment)
                 
+                await self.make_report([apartment], processed_apartments, deal)
+                
             except Exception as ex:
-                raise ex
-
-        await self.make_report(all_apartments, processed_apartments, deal)
-        
+                raise ex        
+            
