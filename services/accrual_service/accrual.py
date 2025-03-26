@@ -36,8 +36,7 @@ class Accrual:
         params = {
             'entityTypeId': apartment_entityTypeId,
             'filter': {
-                is_accrual: 1,
-                id_: 49833  
+                is_accrual: 1
             },
             'select': [title, balance, id_, rate, exemption]
         }
