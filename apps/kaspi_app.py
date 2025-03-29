@@ -39,33 +39,33 @@ async def kaspi_handler(request: Request):
         result = await get_apartment_by_account(personal_account=account)
         if not result:
             logger.error(ApartmentNotFound, message=str(ApartmentNotFound))
-            return JSONResponse(content=kr.make_error_response(txn_id=txn_id))
+            return JSONResponse(content=kr.make_error_response())
         
         apartment_id, address, balance = result.apartment_id, result.title, float(result.apartment_balance)
         debt = -balance if balance else 0.0
 
         if command == "check":
-            return JSONResponse(content=kr.make_response(txn_id=txn_id, result=0, address=address, debt=debt))
+            return JSONResponse(content=kr.make_response(result=0, address=address, debt=debt))
 
         elif command == "pay":
             existing_request = await get_kaspi_pay_request_by_txn_id(txn_id=txn_id)
             if existing_request:
-                return JSONResponse(content=kr.make_response(txn_id=txn_id, result=0, address=address, debt=debt, summ=float(existing_request.summ), prv_id=existing_request.id))
+                return JSONResponse(content=kr.make_response(result=0, address=address, debt=debt, summ=float(existing_request.summ), prv_id=existing_request.id))
             
             prv_txn_id = await execute_kaspi_request(txn_id=txn_id, account=account, date=txn_date, summ=summ, apartment_id=apartment_id, balance=balance)
             if not prv_txn_id:
                 logger.error(ApartmentNotCreated, str(ApartmentNotCreated))
-                return JSONResponse(content=kr.make_error_response(txn_id=txn_id))
+                return JSONResponse(content=kr.make_error_response())
             
-            return JSONResponse(content=kr.make_response(txn_id=txn_id, result=0, address=address, debt=debt, summ=float(summ), prv_id=prv_txn_id.id))
+            return JSONResponse(content=kr.make_response(result=0, address=address, debt=debt, summ=float(summ), prv_id=prv_txn_id.id))
         
         else:
             logger.error(BadKaspiPayRequestParams, str(BadKaspiPayRequestParams))
-            return JSONResponse(content=kr.make_error_response(txn_id=txn_id))
+            return JSONResponse(content=kr.make_error_response())
     
     except Exception as ex:
         logger.error(exception=ex, message=str(ex))
-        return JSONResponse(content=kr.make_error_response(txn_id=txn_id))
+        return JSONResponse(content=kr.make_error_response())
 
 
 app = FastAPI()
